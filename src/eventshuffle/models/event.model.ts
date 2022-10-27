@@ -3,7 +3,7 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 
 // EVENT VOTES OBJECT
-export interface IEventVotes {
+interface IEventVotes {
     people: string[]; // List of people who have voted
     date: Date; // Date for which it was voted
 }
@@ -22,15 +22,16 @@ interface eventVoteModelInterface extends mongoose.Model<any> {
 }
 
 // EVENT OBJECT
-export interface IEvent {
+interface IEvent {
     id?: number; // Sequential ID
     name: string; // Name of the Event
     dates: Date[]; // Possible dates for the Event
     votes?: IEventVotes[]; // Votes casted for an Event
 }
 
-export interface IEventL {
-    id: number;
+// Interface for matching expecting output only
+interface IEventL {
+    id?: number;
     name: string;
 }
 
@@ -52,15 +53,8 @@ interface eventModelInterface extends mongoose.Model<any> {
 
 
 // MODEL DEFINITION
-
 const EventModel = mongoose.model<IEvent, eventModelInterface>('event', eventSchema);
 const EventVoteModel = mongoose.model<IEventVotes, eventVoteModelInterface>('eventVote', eventVoteSchema);
 
-export { EventModel, EventVoteModel };
-
-// EventModel.build({
-//     id: 0,
-//     name: "test event",
-//     dates: [],
-//     votes: []
-// })
+// Exports
+export { EventModel, EventVoteModel, IEvent, IEventL, IEventVotes };
