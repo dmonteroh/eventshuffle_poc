@@ -9,7 +9,11 @@ export class EventController {
     public async CreateEvent (req: Request, res: Response) {
         try {
             const {dates, name} = req.body;
-            let event = await this.newEvent(dates, name)
+            let votes: IEventVotes[] = [];
+            if (Array.isArray(dates)) {
+                votes = this.createVoteList(dates);
+            }
+            let event = await this.newEvent(dates, name, votes)
             // let formattedEvent = this.formatEvent(event);
             // console.log(formattedEvent)
             return res.status(201).send({"id": event.id});
@@ -22,7 +26,7 @@ export class EventController {
     public async GetEvent (req: Request, res: Response) {
         try {
             const id: string = req.params.id;
-            let event = await this.getEventByID(parseInt(id));
+            let event = await this.GetEventByID(parseInt(id));
             let formattedEvent = this.formatEvent(event);
             //console.log(formattedEvent)
             return res.status(201).send(formattedEvent);
@@ -42,28 +46,44 @@ export class EventController {
         }
     }
 
+    // Public MongoDB functions
+    public async GetEventByID(id: number): Promise<IEvent> {
+        let doc = new Promise<IEvent>((resolve, rejects) => {
+            EventModel.findOne({id: id}).exec((err, res) => {
+                if (err) {
+                    rejects(err);
+                } else {
+                    resolve(res);
+                }
+            });
+        });
+        return doc;
+    }
+
+    public async UpdateEventVoteList(id: number, votes: IEventVotes[]): Promise<IEvent> {
+        const filter: any = {id: id};
+        const update: any = {votes: votes};
+        const options: any = {new: false, upsert: false, rawResult: false};
+        let event: IEvent = {id: -1, name: "", dates: []};
+        await EventModel.findOneAndUpdate(filter, update, options).then((res) => {
+            if(res.value instanceof EventModel) {
+                event = res.value;
+            }
+        })
+        return event;
+    }
+
     // Private functions
-    // MongoDB functions
-    private async newEvent(dates: [Date], name: String): Promise<IEvent> {
-        let event: HydratedDocument<IEvent> = new EventModel({id: 0, dates: dates, name: name})
+    // Private MongoDB functions
+    private async newEvent(dates: [Date], name: String, votes?: IEventVotes[]): Promise<IEvent> {
+        let event: HydratedDocument<IEvent> = votes == undefined ? new EventModel({id: 0, dates: dates, name: name}) : new EventModel({id: 0, dates: dates, name: name, votes: votes})
         await event.save().then((savedDoc: IEvent) => {
             savedDoc === event;
         });
         return event;
     }
 
-    private async getEventByID(id: number): Promise<IEvent> {
-        let doc = new Promise<IEvent>((resolve, rejects) => {
-            EventModel.findOne({id: id}).exec((err, res) => {
-                if (err) {
-                    rejects(err);
-                } else {
-                    resolve(res)
-                }
-            });
-        });
-        return doc;
-    }
+    
 
     private async getEventByOID(id: ObjectId): Promise<IEvent> {
         let doc = new Promise<IEvent>((resolve, rejects) => {
@@ -71,7 +91,7 @@ export class EventController {
                 if (err) {
                     rejects(err);
                 } else {
-                    resolve(res)
+                    resolve(res);
                 }
             });
         });
@@ -93,12 +113,18 @@ export class EventController {
 
     // Object transform functions -- matching expected output
     private formatEvent(doc: IEvent): IEvent {
-        let event: IEvent = {
+        return {
             id: doc.id,
             dates: doc.dates,
             name: doc.name
-        }
-        return event;
+        };
+    }
+
+    private createVoteList(dateList: Date[]): IEventVotes[] {
+        const voteList: IEventVotes[] = dateList.map(date => {
+            return {date: date, people: []}
+        });
+        return voteList;
     }
 
     private formatEventL(doc: IEvent[]): IEventL[] {
@@ -109,8 +135,8 @@ export class EventController {
                 return {id: 0, name: event.name}
             } else {
                 return {id: event.id, name: event.name}
-            }
-        })
+            };
+        });
 
         // matching foreach function in case it's neccesary
         // let eventList: IEventL[] = [];
@@ -125,5 +151,3 @@ export class EventController {
     }
 
 }
-
-module.exports = { EventController }

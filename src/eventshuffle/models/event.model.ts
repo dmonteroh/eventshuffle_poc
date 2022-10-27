@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 
@@ -17,7 +17,7 @@ eventVoteSchema.statics.build = (attr: IEventVotes) => {
     return new EventVoteModel(attr);
 }
 
-interface eventVoteModelInterface extends mongoose.Model<any> {
+interface eventVoteModelInterface extends Model<any> {
     build(attr: IEventVotes): any
 }
 
@@ -47,8 +47,8 @@ eventSchema.statics.build = (attr: IEvent) => {
     return new EventModel(attr);
 };
 
-interface eventModelInterface extends mongoose.Model<any> {
-    build(attr: Event): any
+interface eventModelInterface extends Model<any> {
+    build(attr: IEvent): any
 }
 
 
