@@ -1,5 +1,5 @@
-import { CreateEvent, GetEvent, GetEventByID, GetEventList, UpdateEventVoteList } from './event.controller';
-export { CreateEvent, GetEvent, GetEventByID, GetEventList, UpdateEventVoteList }
+import { CreateEvent, GetEvent, GetEventByID, GetEventList, UpdateEventVoteList, GetEventResults } from './event.controller';
+export { CreateEvent, GetEvent, GetEventByID, GetEventList, UpdateEventVoteList, GetEventResults }
 
 import { CreateVote, NewVote } from './vote.controllers';
 export { CreateVote, NewVote }

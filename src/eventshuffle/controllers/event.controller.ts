@@ -1,6 +1,8 @@
-import { Request, Response } from "express";
+import { rejects } from "assert";
+import e, { Request, Response } from "express";
 import { HydratedDocument, ObjectId } from "mongoose";
-import { EventModel, IEvent, IEventL, IEventVotes} from '../models';
+import { resolve } from "path";
+import { EventModel, IEvent, IEventL, IEventVotes, IResult} from '../models';
 
     // Public functions
 export const CreateEvent = async (req: Request, res: Response) => {
@@ -43,12 +45,22 @@ export const GetEventList = async (req: Request, res: Response) => {
     }
 }
 
+export const GetEventResults = async (req: Request, res: Response) => {
+    try {
+        const id: string = req.params.id;
+        let event = await getResults(parseInt(id));
+        return res.status(200).send(event);
+    } catch (error) {
+        return res.status(500).send({"message": "Result for even couldn't be fetched: "+error})
+    }
+}
+
 // Public MongoDB functions
 export const GetEventByID = async (id: number): Promise<IEvent> => {
     let doc = new Promise<IEvent>((resolve, rejects) => {
         EventModel.findOne({id: id}).exec((err, res) => {
             if (err) {
-                rejects(err);
+                rejects(new Error(err.message));
             } else {
                 resolve(res);
             }
@@ -83,13 +95,44 @@ const getEventByOID = (id: ObjectId) => {
     let doc = new Promise<IEvent>((resolve, rejects) => {
         EventModel.findById(id).exec((err, res) => {
             if (err) {
-                rejects(err);
+                rejects(new Error(err.message));
             } else {
                 resolve(res);
             }
         });
     });
     return doc;
+}
+
+const getResults = async (id: number): Promise<IResult> => {
+    const result = new Promise<IResult>(async (resolve, rejects) => {
+        let res: IResult = {name: "", suitableDates: [], id: id};
+        let mostVotes: number = 0;
+        let resultList: IEventVotes[] = [];
+        let event = await GetEventByID(id);
+        if (event !== undefined) {
+            res = formatResult(event);
+            if(event.votes !== undefined) {
+                event.votes.sort((a, b) => b.people.length - a.people.length);
+                mostVotes = event.votes[0].people.length;
+                // can't use map because promises and undefined and void
+                event.votes.forEach(item => {
+                    if(item.people.length === mostVotes) {
+                        resultList.push(item);
+                    }
+                });
+            }
+        }
+        res.suitableDates = resultList;
+
+        if(res.id != null && res.id == event.id) {
+            resolve(res)
+        } else {
+            rejects("Could not fetch results;")
+        }
+
+    });
+    return result;
 }
 
 const getEventList = () => {
@@ -142,4 +185,8 @@ const formatEventL = (doc: IEvent[]): IEventL[] => {
     //     eventList.push(tmpEventL);
     // });
     return eventList;
+}
+
+const formatResult = (doc: IEvent): IResult => {
+    return {name: doc.name, id: doc.id, suitableDates: []};
 }

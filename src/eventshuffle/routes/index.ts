@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { GetEventList, GetEvent, CreateEvent, CreateVote } from '../controllers'
+import { GetEventList, GetEvent, CreateEvent, CreateVote, GetEventResults } from '../controllers'
 
 // Initialize Router & Controllers
 const router = express.Router();
@@ -13,9 +13,7 @@ router.get("/list", async (req, res) => { GetEventList(req, res)})
 router.get("/:id", async (req, res) => { GetEvent(req, res) })
 
 //// Show event results
-router.get("/:id/results", async (req: Request, res: Response) => {
-    res.status(501).send({"status": "Not Implemented"})
-})
+router.get("/:id/results", async (req, res) => { GetEventResults(req, res) })
 
 // POST ROUTERS
 //// Create event
