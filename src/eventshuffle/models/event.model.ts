@@ -35,6 +35,13 @@ interface IEventL {
     name: string;
 }
 
+// Interface for matching result output
+interface IResult {
+    id?: number;
+    name: string;
+    suitableDates: IEventVotes[];
+}
+
 const eventSchema = new Schema<IEvent>({
     id:   {type: Number, required: true},
     name: { type: String, required: true},

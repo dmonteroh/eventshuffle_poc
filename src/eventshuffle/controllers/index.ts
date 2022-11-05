@@ -1,8 +1,8 @@
-import { EventController } from './event.controller';
-export { EventController }
+import { CreateEvent, GetEvent, GetEventByID, GetEventList, UpdateEventVoteList } from './event.controller';
+export { CreateEvent, GetEvent, GetEventByID, GetEventList, UpdateEventVoteList }
 
-import { VoteController } from './vote.controllers';
-export { VoteController }
+import { CreateVote, NewVote } from './vote.controllers';
+export { CreateVote, NewVote }
 
-import { LogicController } from './logic.controllers';
-export { LogicController }
+import { CastVoteToEvent, VoteToEventVote } from './logic.controllers';
+export { CastVoteToEvent, VoteToEventVote }
