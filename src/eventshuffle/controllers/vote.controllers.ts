@@ -18,10 +18,9 @@ import { IVote, VoteModel, IEvent } from "../models";
                 };
                 //returns Promise<IEvent>
                 await CastVoteToEvent(id, vote).then((event) => {
-                    console.log(event);
-                    
+                    //console.log(event);
                     if (event.id == undefined || event.id == -1) {
-                        return {"message": "Vote could not be cast to the event with id: "+id}
+                        return res.status(500).send({"message": "Vote could not be cast to the event with id: "+id});
                     } else {
                         return res.status(200).send(event);
                     }

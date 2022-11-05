@@ -113,6 +113,7 @@ const getResults = async (id: number): Promise<IResult> => {
         if (event !== undefined) {
             res = formatResult(event);
             if(event.votes !== undefined) {
+                // sort number desc
                 event.votes.sort((a, b) => b.people.length - a.people.length);
                 mostVotes = event.votes[0].people.length;
                 // can't use map because promises and undefined and void

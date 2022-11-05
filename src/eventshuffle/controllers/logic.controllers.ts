@@ -27,14 +27,13 @@ export const CastVoteToEvent = async (id: number, tVote: IVote): Promise<IEvent>
 
                 return formatVotedEvent(updatedObject);
             } else {
-                console.log("updatedVotes undefined");
-                
+                // console.log("updatedVotes undefined");
                 return {id: -1, name: "", dates: []};
             }
             
         }
     }
-    console.log("event undefined");
+    //console.log("event undefined");
     return {id: -1, name: "", dates: []};
 }
 
