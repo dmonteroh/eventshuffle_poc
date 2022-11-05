@@ -8,6 +8,27 @@ interface IEventVotes {
     date: Date; // Date for which it was voted
 }
 
+// EVENT OBJECT
+interface IEvent {
+    id?: number; // Sequential ID
+    name: string; // Name of the Event
+    dates: Date[]; // Possible dates for the Event
+    votes?: IEventVotes[]; // Votes casted for an Event
+}
+
+// Interfaces for matching expecting result output only
+interface IEventL {
+    id?: number;
+    name: string;
+}
+
+interface IResult {
+    id?: number;
+    name: string;
+    suitableDates: IEventVotes[];
+}
+
+// MongoDB
 const eventVoteSchema = new Schema<IEventVotes>({
     people: { type: [String], required: true},
     date: {type: Date, required: true}
@@ -19,27 +40,6 @@ eventVoteSchema.statics.build = (attr: IEventVotes) => {
 
 interface eventVoteModelInterface extends Model<any> {
     build(attr: IEventVotes): any
-}
-
-// EVENT OBJECT
-interface IEvent {
-    id?: number; // Sequential ID
-    name: string; // Name of the Event
-    dates: Date[]; // Possible dates for the Event
-    votes?: IEventVotes[]; // Votes casted for an Event
-}
-
-// Interface for matching expecting output only
-interface IEventL {
-    id?: number;
-    name: string;
-}
-
-// Interface for matching result output
-interface IResult {
-    id?: number;
-    name: string;
-    suitableDates: IEventVotes[];
 }
 
 const eventSchema = new Schema<IEvent>({
@@ -64,4 +64,4 @@ const EventModel = mongoose.model<IEvent, eventModelInterface>('event', eventSch
 const EventVoteModel = mongoose.model<IEventVotes, eventVoteModelInterface>('eventVote', eventVoteSchema);
 
 // Exports
-export { EventModel, EventVoteModel, IEvent, IEventL, IEventVotes };
+export { EventModel, EventVoteModel, IEvent, IEventL, IEventVotes, IResult };
