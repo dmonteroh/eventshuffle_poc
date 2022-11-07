@@ -1,11 +1,11 @@
 import e from "express";
 import mongoose, { HydratedDocument } from "mongoose";
-import { NewVote, GetEventByID, UpdateEventVoteList } from "../controllers";
+import { NewVote, GetEventID, UpdateEventVoteList } from "../controllers";
 import { IEvent, IEventVotes, IVote, VoteModel } from "../models";
 
     // Public Functions
-export const CastVoteToEvent = async (id: number, tVote: IVote): Promise<IEvent> => {
-    const event = await GetEventByID(id);
+export const CastVoteToEvent = async (id: string, tVote: IVote): Promise<IEvent> => {
+    const event = await GetEventID(id);
     if (event != undefined) {
         const vote: HydratedDocument<IVote> = await NewVote(tVote.votes, tVote.name);
         if("_id" in vote && mongoose.isValidObjectId(vote._id)) {

@@ -1,16 +1,15 @@
 import { Request, Response } from "express";
 import { HydratedDocument } from "mongoose";
 import { CastVoteToEvent } from "../controllers";
-import { IVote, VoteModel, IEvent } from "../models";
+import { IVote, VoteModel } from "../models";
 
 
     // Public Functions
     export const CreateVote = async (req: Request, res: Response) => {
         try {
-            const idString: string = req.params.id;
-            const id = isNaN(parseInt(idString)) ? -1 : parseInt(idString);
+            const id: string = req.params.id;
 
-            if (id != -1) {
+            if (id != "-1") {
                 const {votes, name} = req.body;
                 const vote: IVote = {
                     name: name,
@@ -36,6 +35,9 @@ import { IVote, VoteModel, IEvent } from "../models";
 
     // MongoDB functions
     export const NewVote = async (votes: Date[], name: String): Promise<HydratedDocument<IVote>> => {
+        if(votes == undefined || votes.length <= 0 || name.length <= 0) {
+            throw new Error("Vote list can't be undefined or empty, and name can't be empty")
+        }
         let event: HydratedDocument<IVote> = new VoteModel({votes: votes, name: name})
         await event.save().then((savedDoc: IVote) => {
             savedDoc === event;
