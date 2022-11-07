@@ -1,6 +1,14 @@
 version: '3.7'
 services:
-  mongodb_container:
+  eventshuffle:
+    image: dmonteroh/eventshuffle_poc
+    restart: always
+    build: .
+    ports:
+      - 8080:8080
+    links:
+      - mongo
+  mongo:
     image: mongo:latest
     environment:
       MONGO_INITDB_ROOT_USERNAME: root

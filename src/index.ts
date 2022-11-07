@@ -11,7 +11,7 @@ const port: number = parseInt(process.env.PORT as string, 10);
 app.use(express.json());
 
 // MongoDB Connection
-let db = "mongodb://root:rootpassword@localhost:27017/event?connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-1"
+let db = "mongodb://root:rootpassword@mongo:27017/event?connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-1"
 
 mongoose.connect(db, (err) => {
   if (err) {
