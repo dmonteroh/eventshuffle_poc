@@ -21,7 +21,7 @@ import { IVote, VoteModel } from "../models";
                     if (event.id == undefined || event.id == -1) {
                         return res.status(500).send({"message": "Vote could not be cast to the event with id: "+id});
                     } else {
-                        return res.status(200).send(event);
+                        return res.status(201).send(event);
                     }
                 }); 
             } else {
@@ -34,11 +34,11 @@ import { IVote, VoteModel } from "../models";
     }
 
     // MongoDB functions
-    export const NewVote = async (votes: Date[], name: String): Promise<HydratedDocument<IVote>> => {
+    export const NewVote = async (votes: Date[], name: string): Promise<HydratedDocument<IVote>> => {
         if(votes == undefined || votes.length <= 0 || name.length <= 0) {
             throw new Error("Vote list can't be undefined or empty, and name can't be empty")
         }
-        let event: HydratedDocument<IVote> = new VoteModel({votes: votes, name: name})
+        const event: HydratedDocument<IVote> = new VoteModel({votes: votes, name: name})
         await event.save().then((savedDoc: IVote) => {
             savedDoc === event;
         });

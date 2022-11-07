@@ -5,16 +5,16 @@ services:
     restart: always
     build: .
     ports:
-      - 8080:8080
+      - ${NODE_PORT}:${NODE_PORT}
     links:
       - mongo
   mongo:
     image: mongo:latest
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USR}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
     ports:
-      - 27017:27017
+      - ${MONGO_PORT}:${MONGO_PORT}
     volumes:
       - mongodb_data_container:/data/db
 

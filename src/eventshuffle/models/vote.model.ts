@@ -3,7 +3,7 @@ import mongoose, { Model, Schema } from 'mongoose';
 interface IVote {
     name: string; // Name of the person voting
     votes: Date[]; // Dates for which the person is voting
-};
+}
 
 const voteSchema = new Schema<IVote>({
     name: { type: String, required: true},

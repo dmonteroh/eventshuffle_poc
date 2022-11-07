@@ -1,7 +1,6 @@
-import e from "express";
 import mongoose, { HydratedDocument } from "mongoose";
 import { NewVote, GetEventID, UpdateEventVoteList } from "../controllers";
-import { IEvent, IEventVotes, IVote, VoteModel } from "../models";
+import { IEvent, IEventVotes, IVote } from "../models";
 
     // Public Functions
 export const CastVoteToEvent = async (id: string, tVote: IVote): Promise<IEvent> => {
@@ -10,7 +9,7 @@ export const CastVoteToEvent = async (id: string, tVote: IVote): Promise<IEvent>
         const vote: HydratedDocument<IVote> = await NewVote(tVote.votes, tVote.name);
         if("_id" in vote && mongoose.isValidObjectId(vote._id)) {
             const eventVotes: IEventVotes[] = VoteToEventVote(vote);
-            let updatedVotes: IEventVotes[] | undefined = event.votes;
+            const updatedVotes: IEventVotes[] | undefined = event.votes;
             // map felt uncomfortable to use, maybe just rusty
             // loop could be performed by a mongodb query, but need to evaluate efficiency
             
@@ -39,7 +38,7 @@ export const CastVoteToEvent = async (id: string, tVote: IVote): Promise<IEvent>
 
 export const VoteToEventVote = (vote: IVote): IEventVotes[] => {
     const eventVotes: IEventVotes[] = vote.votes.map(date => {
-        let nameList : string[] = [vote.name]
+        const nameList : string[] = [vote.name]
         return {date: date, people: nameList }
     });
 

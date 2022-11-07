@@ -24,7 +24,7 @@ const CreateEvent = async (req: Request, res: Response) => {
         if (Array.isArray(dates)) {
             votes = createVoteList(dates);
         }
-        let event = await newEvent(dates, name, votes)
+        const event = await newEvent(dates, name, votes)
         // let formattedEvent = this.formatEvent(event);
         // console.log(formattedEvent)
         return res.status(201).send({"id": event.id});
@@ -37,10 +37,10 @@ const CreateEvent = async (req: Request, res: Response) => {
 const GetEvent = async (req: Request, res: Response) => {
     try {
         const id: string = req.params.id;
-        let event = await GetEventID(id);
-        let formattedEvent = formatEvent(event);
+        const event = await GetEventID(id);
+        const formattedEvent = formatEvent(event);
         //console.log(formattedEvent)
-        return res.status(201).send(formattedEvent);
+        return res.status(200).send(formattedEvent);
     } catch (error) {
         return res.status(500).send({"message": "Event not found: "+error});
     }
@@ -48,10 +48,10 @@ const GetEvent = async (req: Request, res: Response) => {
 
 const GetEventList = async (req: Request, res: Response) => {
     try {
-        let events = await eventList();
-        let formattedEvents = formatEventL(events);
+        const events = await eventList();
+        const formattedEvents = formatEventL(events);
         //console.log(formattedEvents)
-        return res.status(201).send(formattedEvents);
+        return res.status(200).send(formattedEvents);
     } catch (error) {
         return res.status(500).send({"message": "No events not found: "+error});
     }
@@ -60,7 +60,7 @@ const GetEventList = async (req: Request, res: Response) => {
 const GetEventResults = async (req: Request, res: Response) => {
     try {
         const id: string = req.params.id;
-        let event = await getResults(id);
+        const event = await getResults(id);
         return res.status(200).send(event);
     } catch (error) {
         return res.status(500).send({"message": "Result for even couldn't be fetched: "+error})
@@ -71,7 +71,7 @@ const GetEventResults = async (req: Request, res: Response) => {
 
 const UpdateEventVoteList = async (id: string, votes: IEventVotes[]): Promise<IEvent> => {
     const filter: any = {id: id};
-    let event = await EventModel.findOne(filter);
+    const event = await EventModel.findOne(filter);
     event.votes = votes;
     event.save().then((savedDoc: IEvent) => {
         savedDoc === event;
@@ -81,11 +81,11 @@ const UpdateEventVoteList = async (id: string, votes: IEventVotes[]): Promise<IE
 
 // Private functions
 // Private MongoDB functions
-const newEvent = async (dates: Date[], name: String, votes?: IEventVotes[]) => {
+const newEvent = async (dates: Date[], name: string, votes?: IEventVotes[]) => {
     if (Array.isArray(dates) && dates.length  <=0 && name.length <= 0) {
         throw new Error("Name of event can't be empty, list of dates can't be empty")
     }
-    let event: HydratedDocument<IEvent> = votes == undefined ? new EventModel({id: 0, dates: dates, name: name}) : new EventModel({id: 0, dates: dates, name: name, votes: votes})
+    const event: HydratedDocument<IEvent> = votes == undefined ? new EventModel({id: 0, dates: dates, name: name}) : new EventModel({id: 0, dates: dates, name: name, votes: votes})
     await event.save().then((savedDoc: IEvent) => {
         savedDoc === event;
     });
@@ -93,7 +93,7 @@ const newEvent = async (dates: Date[], name: String, votes?: IEventVotes[]) => {
 }
 
 const getEventByID = async (id: number): Promise<IEvent> => {
-    let doc = new Promise<IEvent>((resolve, rejects) => {
+    const doc = new Promise<IEvent>((resolve, rejects) => {
         EventModel.findOne({id: id}).exec((err, res) => {
             if (err) {
                 rejects(new Error(err.message));
@@ -106,7 +106,7 @@ const getEventByID = async (id: number): Promise<IEvent> => {
 }
 
 const getEventByOID = (id: ObjectId) => {
-    let doc = new Promise<IEvent>((resolve, rejects) => {
+    const doc = new Promise<IEvent>((resolve, rejects) => {
         EventModel.findById(id).exec((err, res) => {
             if (err) {
                 rejects(new Error(err.message));
@@ -119,11 +119,11 @@ const getEventByOID = (id: ObjectId) => {
 }
 
 const getResults = async (id: string): Promise<IResult> => {
-    const result = new Promise<IResult>(async (resolve, rejects) => {
-        let event = await GetEventID(id);
+    const event = await GetEventID(id);
+    const result = new Promise<IResult>((resolve, rejects) => {
         let res: IResult = {name: "", suitableDates: [], id: event.id};
-        let mostVotes: number = 0;
-        let resultList: IEventVotes[] = [];
+        let mostVotes = 0;
+        const resultList: IEventVotes[] = [];
         
         if (event !== undefined) {
             res = formatResult(event);
@@ -154,7 +154,7 @@ const getResults = async (id: string): Promise<IResult> => {
 }
 
 const eventList = () => {
-    let docs = new Promise<IEvent[]>((resolve, rejects) => {
+    const docs = new Promise<IEvent[]>((resolve, rejects) => {
         EventModel.find().exec((err, res) => {
             if(err) {
                 rejects(err);
@@ -190,7 +190,7 @@ const formatEventL = (doc: IEvent[]): IEventL[] => {
             return {id: 0, name: event.name}
         } else {
             return {id: event.id, name: event.name}
-        };
+        }
     });
 
     // matching foreach function in case it's neccesary

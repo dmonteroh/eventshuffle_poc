@@ -5,10 +5,10 @@ WORKDIR /usr/src/app
 
 COPY package*.json /usr/src/app/
 
-RUN npm install --only=production && npm cache clean --force && npm install -g typescript
+RUN npm install && npm cache clean --force && npm install -g typescript
 
 COPY . /usr/src/app
 
-EXPOSE 8080
+EXPOSE ${NODE_PORT}
 
 CMD ["npm", "start"]
