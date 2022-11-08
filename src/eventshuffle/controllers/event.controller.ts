@@ -63,7 +63,7 @@ const GetEventResults = async (req: Request, res: Response) => {
         const event = await getResults(id);
         return res.status(200).send(event);
     } catch (error) {
-        return res.status(500).send({"message": "Result for even couldn't be fetched: "+error})
+        return res.status(500).send({"message": "Result for event couldn't be fetched: "+error})
     }
 }
 
@@ -127,7 +127,7 @@ const getResults = async (id: string): Promise<IResult> => {
         
         if (event !== undefined) {
             res = formatResult(event);
-            if(event.votes !== undefined) {
+            if(event.votes !== undefined && event.votes.length > 0) {
                 // sort number desc
                 event.votes.sort((a, b) => b.people.length - a.people.length);
                 mostVotes = event.votes[0].people.length;
