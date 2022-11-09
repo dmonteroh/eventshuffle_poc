@@ -38,11 +38,13 @@ import { IVote, VoteModel } from "../models";
         if(votes == undefined || votes.length <= 0 || name.length <= 0) {
             throw new Error("Vote list can't be undefined or empty, and name can't be empty")
         }
-        const event: HydratedDocument<IVote> = new VoteModel({votes: votes, name: name})
-        await event.save().then((savedDoc: IVote) => {
-            savedDoc === event;
-        });
-        return event;
+        const vote: HydratedDocument<IVote> = new VoteModel({votes: votes, name: name})
+        //save needs to happen after we're sure the vote can be casted
+        return vote;
+        // await vote.save().then((savedDoc: IVote) => {
+        //     savedDoc === vote;
+        // });
+        // return vote;
     }
 
 
